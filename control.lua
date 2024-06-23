@@ -78,7 +78,6 @@ else
 end
 
 while true do
-    term.clear()
     term.setCursorPos(1, 10) -- Reset cursor position
     displayHeader()
     print([[
@@ -96,25 +95,18 @@ while true do
     -- Handle key events
     local event, key = os.pullEvent("key")
     if key == keys.one then
-        print("Mine Chunk")
         sendCommand("mine")
     elseif key == keys.nine then
-        print("Connection Menu")
         promptID()
     elseif key == keys.two then
-        print("Return to Start")
         sendCommand("goto_start")
     elseif key == keys.three then
-        print("Locating")
         sendCommand("get location")
     elseif key == keys.four then
-        print("Refuel")
         sendCommand("refuel")
     elseif key == keys.five then
-        print("Shutdown Turtle")
         sendCommand("shutdown")
     elseif key == keys.e then
-        print("Stop Mining")
         sendCommand("stop_mining")
     elseif key == keys.s then
         print("Settings")
