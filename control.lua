@@ -19,7 +19,7 @@ Remote Turtle Control
 Version 1 by QuickMash
        ]])
     print(status)
-    local request = http.get("https://example.tweaked.cc")
+    local request = http.get("https://raw.githubusercontent.com/QuickMash/RTC/main/motd.txt")
     print("MOTD: " .. request.readAll())
     request.close()
     print('=== Remote Control Panel ===')
