@@ -1,7 +1,7 @@
 local turtleID = nil
 local connection = false
 local status = "Disconnected"
-local modem = peripheral.find("modem") or error("[Error] No modem attached", 0)
+local modem = peripheral.find("modem") or error("Maybe attach a modem... So you can talk to the turtle.", 0)
 modem.open(2450) -- Open Channel 2450
 
 local function displayHeader()
@@ -13,7 +13,7 @@ local function displayHeader()
 ______ _____ _____ 
 | ___ \_   _/  __ \
 | |_/ / | | | /  \/
-|    /  | | | |    
+|    /  | | | |      
 | |\ \  | | | \__/\
 \_| \_| \_/  \____/
 Remote Turtle Control
@@ -27,7 +27,7 @@ Version 1 by QuickMash
         print("MOTD: " .. request.readAll())
         request.close()
     else
-        print("MOTD: Failed to retrieve message (" .. (err or "unknown error") .. ")")
+        print("MOTD: Ahh! Scary, cant get the motd - (" .. (err or "unknown error") .. ")")
     end
     
     print('=== Remote Control Panel ===')
@@ -51,7 +51,7 @@ local function verify()
         end
     else
         term.setTextColor(colors.red)
-        print("Modem has to be wireless\nPlease put a wireless modem on the computer then run this program.")
+        print("")
     end
 end
 
