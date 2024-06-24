@@ -33,6 +33,10 @@ Version 1 by QuickMash
     print('=== Remote Control Panel ===')
 end
 
+local function sendCommand(cmd)
+    modem.transmit(2450, 2451, cmd)
+end
+
 local function verify()
     if modem.isWireless() then
         -- Send verification request
@@ -51,9 +55,7 @@ local function verify()
     end
 end
 
-local function sendCommand(cmd)
-    modem.transmit(2450, 2451, cmd)
-end
+
 
 local function promptID()
     term.clear()
