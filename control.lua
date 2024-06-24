@@ -23,12 +23,7 @@ Version 1 by QuickMash
     print("MOTD: " .. request.readAll())
     request.close()
     print('=== Remote Control Panel ===')
-
-    -- Menu options
-    local options = {
-
-    }
-
+end
 local function verify()
     if modem.isWireless() then
         -- Send verification request
@@ -127,5 +122,4 @@ while true do
         os.sleep(1)
         break
     end
-end
 end
