@@ -36,9 +36,9 @@ end
 local function verify()
     if modem.isWireless() then
         -- Send verification request
-        modem.transmit(2450, 2451, "verify:" .. turtleID)
+        sendCommand(2450, 2451, {action="verify", value=turtleID})
         local event, side, channel, replyChannel, message, distance = os.pullEvent("modem_message")
-        if channel == 2450 and message == "verified:" .. turtleID then
+        if channel == 2450 and message == "verified:" .. turtleID then -- Fix this to work with new "protocol"
             connection = true
             status = "Connected to " .. turtleID
         else
@@ -58,9 +58,9 @@ end
 local function promptID()
     term.clear()
     displayHeader()
-    term.setCursorPos(1, 9)
+    term.setCursorPos(1, 13)
     print("Enter Turtle ID: ")
-    term.setCursorPos(1, 10)
+    term.setCursorPos(1, 14)
     turtleID = read()
     verify()
 end
@@ -102,15 +102,15 @@ while true do
     if key == keys.one then
         sendCommand("mine")
     elseif key == keys.two then
-        sendCommand("goto_start")
+        sendCommand({action="mine"})
     elseif key == keys.three then
-        sendCommand("get location")
+        sendCommand({action="locate"})
     elseif key == keys.four then
-        sendCommand("refuel")
+        sendCommand({action="refuel"})
     elseif key == keys.five then
-        sendCommand("shutdown")
+        sendCommand({action="shutdown"})
     elseif key == keys.e then
-        sendCommand("stop_mining")
+        sendCommand({action="quit"})
     elseif key == keys.s then
         print("Settings")
         -- Add settings functionality here
@@ -121,10 +121,10 @@ while true do
         print("Enter custom command: ")
         term.setCursorPos(1, 16)
         local customCmd = read()
-        sendCommand("custom:" .. customCmd)
+        sendCommand({acti, })
         os.pullEvent("modem_message") -- Adjust this as necessary
     elseif key == keys.q or key == keys.esc then
-        print("Goodbye!")
+        print("Goodbye! Turtle Program will stay running.")
         os.sleep(1)
         break
     end
