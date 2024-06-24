@@ -40,7 +40,7 @@ end
 local function verify()
     if modem.isWireless() then
         -- Send verification request
-        sendCommand({action="verify", value=turtleID})
+        modem.transmit(2450, 2451, {action="verify", value=turtleID})
         local event, side, channel, replyChannel, message, distance = os.pullEvent("modem_message")
         if channel == 2450 and message == "verified:" .. turtleID then -- Fix this to work with new "protocol"
             connection = true
