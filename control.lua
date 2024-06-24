@@ -19,6 +19,7 @@ ______ _____ _____
 Remote Turtle Control
 Version 1 by QuickMash
     ]])
+    verify()
     print(status)
     
     local request, err = http.get("https://raw.githubusercontent.com/QuickMash/RTC/main/motd.txt")
