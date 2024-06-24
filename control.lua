@@ -4,6 +4,24 @@ local status = "Disconnected"
 local modem = peripheral.find("modem") or error("Maybe attach a modem... So you can talk to the turtle.", 0)
 modem.open(2450) -- Open Channel 2450
 
+local function verify()
+    if modem.isWireless() then
+        -- Send verification request
+        modem.transmit(2450, 2451, {action="verify", value=turtleID})
+        local event, side, channel, replyChannel, message, distance = os.pullEvent("modem_message")
+        if channel == 2450 and message == "verified:" .. turtleID then -- Fix this to work with new "protocol"
+            connection = true
+            status = "Connected to " .. turtleID
+        else
+            connection = false
+            status = "Verification failed"
+        end
+    else
+        term.setTextColor(colors.red)
+        print("")
+    end
+end
+
 local function displayHeader()
     term.clear()
     term.setBackgroundColor(colors.blue)
@@ -35,24 +53,6 @@ end
 
 local function sendCommand(cmd)
     modem.transmit(2450, 2451, cmd)
-end
-
-local function verify()
-    if modem.isWireless() then
-        -- Send verification request
-        modem.transmit(2450, 2451, {action="verify", value=turtleID})
-        local event, side, channel, replyChannel, message, distance = os.pullEvent("modem_message")
-        if channel == 2450 and message == "verified:" .. turtleID then -- Fix this to work with new "protocol"
-            connection = true
-            status = "Connected to " .. turtleID
-        else
-            connection = false
-            status = "Verification failed"
-        end
-    else
-        term.setTextColor(colors.red)
-        print("")
-    end
 end
 
 
