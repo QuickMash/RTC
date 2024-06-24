@@ -8,6 +8,7 @@ term.setBackgroundColor(colors.blue)
 term.setTextColor(colors.white)
 term.setCursorPos(1,1)
 local function displayHeader()
+    term.setCursorPos(1,1)
     print([[
 ______ _____ _____ 
 | ___ \_   _/  __ \
@@ -49,9 +50,9 @@ end
 local function promptID()
     term.clear()
     displayHeader()
-    term.setCursorPos(1, 15)
+    term.setCursorPos(1, 9)
     print("Enter Turtle ID: ")
-    term.setCursorPos(1, 16)
+    term.setCursorPos(1, 10)
     turtleID = read()
     verify()
 end
