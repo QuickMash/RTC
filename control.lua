@@ -1,13 +1,13 @@
 local turtleID = nil
 local connection = false
-local status
+local status = "Disconnected"
 local modem = peripheral.find("modem") or error("[Error] No modem attached", 0)
 modem.open(2450) -- Open Channel 2450
-term.clear()
-term.setBackgroundColor(colors.blue)
-term.setTextColor(colors.white)
-term.setCursorPos(1,1)
+
 local function displayHeader()
+    term.clear()
+    term.setBackgroundColor(colors.blue)
+    term.setTextColor(colors.white)
     term.setCursorPos(1,1)
     print([[
 ______ _____ _____ 
@@ -18,13 +18,20 @@ ______ _____ _____
 \_| \_| \_/  \____/
 Remote Turtle Control
 Version 1 by QuickMash
-       ]])
+    ]])
     print(status)
-    local request = http.get("https://raw.githubusercontent.com/QuickMash/RTC/main/motd.txt")
-    print("MOTD: " .. request.readAll())
-    request.close()
+    
+    local request, err = http.get("https://raw.githubusercontent.com/QuickMash/RTC/main/motd.txt")
+    if request then
+        print("MOTD: " .. request.readAll())
+        request.close()
+    else
+        print("MOTD: Failed to retrieve message (" .. (err or "unknown error") .. ")")
+    end
+    
     print('=== Remote Control Panel ===')
 end
+
 local function verify()
     if modem.isWireless() then
         -- Send verification request
@@ -74,7 +81,7 @@ else
 end
 
 while true do
-    term.setCursorPos(1, 10) -- Reset cursor position
+    term.clear()
     displayHeader()
     print([[
 ++ MAIN MENU ++
@@ -88,12 +95,11 @@ while true do
 [C] Custom Command
 [Q ESC] Quit Program
 ]])
-    -- Handle key events
+    term.setCursorPos(1, 14) -- Adjust as necessary
+
     local event, key = os.pullEvent("key")
     if key == keys.one then
         sendCommand("mine")
-    elseif key == keys.nine then
-        promptID()
     elseif key == keys.two then
         sendCommand("goto_start")
     elseif key == keys.three then
@@ -106,9 +112,8 @@ while true do
         sendCommand("stop_mining")
     elseif key == keys.s then
         print("Settings")
-        -- Add settings functionality
+        -- Add settings functionality here
     elseif key == keys.c then
-        -- Custom command input
         term.clear()
         displayHeader()
         term.setCursorPos(1, 15)
@@ -116,8 +121,7 @@ while true do
         term.setCursorPos(1, 16)
         local customCmd = read()
         sendCommand("custom:" .. customCmd)
-        -- Wait until command is sent (handled by the turtle program)
-        os.pullEvent("modem_message") -- You may need to adjust this depending on how you handle responses
+        os.pullEvent("modem_message") -- Adjust this as necessary
     elseif key == keys.q or key == keys.esc then
         print("Goodbye!")
         os.sleep(1)
