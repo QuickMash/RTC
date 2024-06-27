@@ -9,12 +9,14 @@ local function verify()
         -- Send verification request
         modem.transmit(2450, 2451, {action="verify", value=turtleID})
         local event, side, channel, replyChannel, message, distance = os.pullEvent("modem_message")
-        if channel == 2450 and message == "verified:" .. turtleID then -- Fix this to work with new "protocol"
-            connection = true
-            status = "Connected to " .. turtleID
-        else
-            connection = false
-            status = "Verification failed"
+        if channel == 2450 then
+            if type(message) == "table" and message.action == "verify" then
+                if type(message) == "table" and message.value == "connected" then
+                connection = true
+                status = "Connected to " .. turtleID
+            else
+                connection = false
+                status = "Verification failed"
         end
     else
         term.setTextColor(colors.red)
@@ -99,7 +101,6 @@ while true do
 [Q ESC] Quit Program
 ]])
     term.setCursorPos(1, 14) -- Adjust as necessary
-
     local event, key = os.pullEvent("key")
     if key == keys.one then
         sendCommand("mine")
@@ -129,5 +130,6 @@ while true do
         print("Goodbye! Turtle Program will stay running.")
         os.sleep(1)
         break
+    verify()
     end
 end

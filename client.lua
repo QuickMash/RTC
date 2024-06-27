@@ -1,10 +1,10 @@
-local turtleID = os.getComputerID()
+local turtleID = os.getComputerID() -- Not gonna update, very static...
 local status = false
-local log
+local location = nil
 local stopmine
 local startPos = gps.locate()
 if status == false then
-    status = "Disconnected, my ID is " .. turtleID .. "!"
+    status = "Disconnected, my ID is " .. turtleID .. "!" -- This looks cool.
 else
     status = "Connected"
 end
@@ -58,36 +58,40 @@ while true do
     displayHeader()
     local event, side, channel, replyChannel, message, distance = os.pullEvent("modem_message")
     if channel == 2451 then
-        if message == "mine" then
-            mine()
-        elseif message == "goto_start" then
-            moveTo(startPos)
-            print("Returning to start...")
-        elseif message == "get location" then
-            
-        elseif message == "view_inventory" then
-            -- Implement view inventory functionality
-            print("Viewing inventory...")
-        elseif message == "refuel" then
-            print("Searching for refuel")
-            for i = 1, 16 do -- loop through the slots
-                turtle.select(i) -- change to the slot
-                if turtle.refuel(0) then -- if it's valid fuel
-                   turtle.refuel(1) -- consume half the stack as fuel
-                end
-              end
-        elseif message == "shutdown" then
+        if type(message) == "table" and message.action == "mine" then -- before publish, add id to messages to secure them, beta not secure-ish
+            if stopmine then
+                stopmine = false
+                mine()
+            elseif stopmine == false then
+                mine()
+            else
+                print("Error, Variable true nor false at Stopmine")
+                return nil
+            end
+        elseif type(message) == "table" and message.action == "stopmine" then
+            if stopmine == false then
+                stopmine == true
+            elseif stopmine then
+                return "Cannot Stopmine if aready true."
+            else
+                print("Error, Variable true nor false at Stopmine")
+            end
+        elseif type(message) == "table" and message.action = "quit" then
+            -- Default shutdown
+            print("Goodbye!")
+            os.sleep(1)
             os.shutdown()
-            print("Shutting down...")
-            os.shutdown()
-        elseif message == "stop_mining" then
-            stopmine = true
-            print("Stopping mining...")
-        elseif message:match("^custom:") then
-            -- Custom command
-            local customCmd = message:sub(8) -- Remove "custom:" prefix
-            print("Executing custom command: " .. customCmd)
-            -- IDK how to do this
+        elseif type(message) == "table" and message.action == "locate" then
+            location = gps.locate()
+            if location == nil then
+                print("Error, Variable is nil at location")
+            else
+                modem.transmit(2450, 2451, {action="return" value=location})
+            end
+        elseif type(message) == "table" and message.action == "verify" then
+            if message.value == turtleID then
+                modem.transmit(2450, 2451, {action="verify" value="allow"})
+            end -- other users may try to connect, just ignore others
         end
     end
 end
