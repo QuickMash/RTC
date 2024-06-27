@@ -70,7 +70,7 @@ while true do
             end
         elseif type(message) == "table" and message.action == "stopmine" then
             if stopmine == false then
-                stopmine == true
+                stopmine = true
             elseif stopmine then
                 return "Cannot Stopmine if aready true."
             else
